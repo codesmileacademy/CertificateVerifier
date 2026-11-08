@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Məlumat Bazası Oxuyucu | CodeSmile</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #0f172a; color: #f8fafc; padding: 30px; }
+        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h2 { color: #fdcd00; text-align: center; margin-top: 0; }
+        .control-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input { flex: 1; min-width: 250px; padding: 10px; border: 1px solid #334155; border-radius: 6px; background: #0f172a; color: white; }
+        
+        button { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
+        .btn-fetch { background: #0455dc; }
+        .btn-fetch:hover { background: #0342b0; }
+        
+        .btn-download { background: #10b981; display: none; } /* Əvvəlcə gizli olur */
+        .btn-download:hover { background: #059669; }
+
+        pre { background: #0f172a; padding: 20px; border-radius: 8px; border: 1px solid #334155; overflow-x: auto; color: #10b981; font-size: 14px; max-height: 500px; overflow-y: auto;}
+        .error { color: #ef4444; text-align: center; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🔒 Gizli Bazanı Oxu və Endir (db.json)</h2>
+        <div class="control-panel">
+            <input type="password" id="gh-token" placeholder="GitHub Access Token daxil edin...">
+            <button class="btn-fetch" onclick="fetchAndDecode()">Bazan Gətir və Aç</button>
+            <button class="btn-download" id="btn-download" onclick="downloadDatabase()">📥 Sənəd Kimi Endir</button>
+        </div>
+        <div id="msg" class="error"></div>
+        <pre id="json-output">// Məlumatlar burada görünəcək...</pre>
+    </div>
+
+    <script>
+        const REPO_OWNER = "codesmileacademy";
+        const REPO_NAME = "CertificateVerifier";
+        
+        let currentDecodedData = null; // Datani yadda saxlamaq üçün
+
+        window.onload = () => {
+            const savedToken = localStorage.getItem("csa_gh_token_reader");
+            if (savedToken) document.getElementById("gh-token").value = savedToken;
+        };
+
+        async function fetchAndDecode() {
+            const token = document.getElementById("gh-token").value.trim();
+            const output = document.getElementById("json-output");
+            const msg = document.getElementById("msg");
+            const downloadBtn = document.getElementById("btn-download");
+            
+            if(!token) { msg.textContent = "Token daxil edilməlidir!"; return; }
+            
+            msg.textContent = "Yüklənir...";
+            msg.style.color = "#fdcd00";
+            output.textContent = "";
+            downloadBtn.style.display = "none";
+            currentDecodedData = null;
+
+            localStorage.setItem("csa_gh_token_reader", token); 
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/database/db.json?v=${new Date().getTime()}`, {
+                    headers: { "Authorization": `token ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Fayl tapılmadı və ya Token yanlışdır!");
+                
+                const data = await res.json();
+                
+                let rawJson = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                let decodedData = {};
+
+                if (rawJson.encrypted_data) {
+                    decodedData = JSON.parse(decodeURIComponent(escape(atob(rawJson.encrypted_data))));
+                } else {
+                    decodedData = rawJson;
+                }
+
+                currentDecodedData = decodedData; // Endirmək üçün qlobal dəyişənə yazırıq
+                
+                msg.textContent = "";
+                output.textContent = JSON.stringify(decodedData, null, 4);
+                
+                // Məlumat gəldikdən sonra Endir düyməsini göstər
+                downloadBtn.style.display = "inline-block";
+
+            } catch (err) {
+                msg.style.color = "#ef4444";
+                msg.textContent = err.message;
+            }
+        }
+
+        // --- YENİ FUNKSİYA: SƏNƏD KİMİ ENDİRMƏK ---
+        function downloadDatabase() {
+            if (!currentDecodedData) return;
+
+            // JSON məlumatını mətnə çevir
+            const dataStr = JSON.stringify(currentDecodedData, null, 4);
+            
+            // Faylı yarat (Blob)
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            // Gizli link yaradıb avtomatik kliklədərək endiririk
+            const a = document.createElement("a");
+            a.href = url;
+            
+            // Yüklənəcək faylın adı və tarixi
+            const date = new Date().toISOString().split('T')[0];
+            a.download = `CodeSmile_Tələbə_Bazası_${date}.json`;
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            // Prosesdən sonra linki sil
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
