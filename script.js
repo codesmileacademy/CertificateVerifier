@@ -48,11 +48,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const resId = document.getElementById("res-id");
     const resLink = document.getElementById("res-link");
 
-    // Əvvəlcə bazanı (db.json) yükləyirik
-    fetch('database/db.json')
+  // Əvvəlcə bazanı (db.json) yükləyirik (Cache-i ləğv edərək)
+    fetch('database/db.json?v=' + new Date().getTime())
         .then(response => response.json())
         .then(data => {
-            certificatesDB = data;
+            
+            // --- ŞİFRƏAÇAN SİSTEM ---
+            if (data.encrypted_data) {
+                // Əgər baza şifrələnibsə, onu geri (oxunaqlı formaya) çevirir
+                const decodedStr = decodeURIComponent(escape(atob(data.encrypted_data)));
+                certificatesDB = JSON.parse(decodedStr);
+            } else {
+                // Əgər hələ şifrələnməyibsə (köhnə formatdırsa)
+                certificatesDB = data;
+            }
+            // ------------------------
             
             // Baza yükləndikdən sonra URL-də ID varsa yoxla
             const urlParams = new URLSearchParams(window.location.search);
@@ -63,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
         .catch(err => console.error("Baza oxunmadı:", err));
-
     // Dil dəyişdirmə məntiqi
     document.getElementById("btn-az").addEventListener("click", () => switchLang("az"));
     document.getElementById("btn-en").addEventListener("click", () => switchLang("en"));
