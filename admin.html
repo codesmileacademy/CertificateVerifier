@@ -20,9 +20,9 @@
         .btn-gen:hover { background: #e0b500; }
         .btn-submit { background: #0455dc; color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 1rem; transition: 0.2s; }
         .btn-submit:hover { background: #0342b0; }
-        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 6px; text-align: center; display: none; font-weight: 500;}
+        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 6px; text-align: center; display: none; font-weight: 600;}
         .success { background: #d1fae5; color: #059669; display: block; }
-        .error { background: #fef2f2; color: #dc2626; display: block; }
+        .error { background: #fef2f2; color: #dc2626; display: block; border: 1px solid #fecaca; }
         .info { background: #e0f2fe; color: #0284c7; display: block; }
     </style>
 </head>
@@ -38,35 +38,35 @@
             <div class="form-group">
                 <label>Sertifikat ID (Özünüz yazın və ya avtomatik yaradın):</label>
                 <div class="id-group">
-                    <input type="text" id="cert-id" placeholder="Məs: CSA-2026-1234" required>
+                    <input type="text" id="cert-id" placeholder="Məs: CSA-2026-1234" required autocomplete="off">
                     <button type="button" class="btn-gen" id="btn-generate-id">Avtomatik ID Yarat</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Tələbənin Adı və Soyadı:</label>
-                <input type="text" id="student-name" required>
+                <input type="text" id="student-name" required autocomplete="off">
             </div>
 
             <div class="row">
                 <div class="form-group">
                     <label>Tədris Proqramı (AZ):</label>
-                    <input type="text" id="course-az" required>
+                    <input type="text" id="course-az" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Training Program (EN):</label>
-                    <input type="text" id="course-en" required>
+                    <input type="text" id="course-en" required autocomplete="off">
                 </div>
             </div>
 
             <div class="row">
                 <div class="form-group">
                     <label>Verilmə Tarixi (AZ):</label>
-                    <input type="text" id="date-az" required>
+                    <input type="text" id="date-az" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Issue Date (EN):</label>
-                    <input type="text" id="date-en" required>
+                    <input type="text" id="date-en" required autocomplete="off">
                 </div>
             </div>
 
@@ -84,23 +84,31 @@
         const REPO_OWNER = "codesmileacademy";
         const REPO_NAME = "CertificateVerifier";
         
+        // 1. TOKEN CANLI YADDAŞA YAZILMASI
+        const tokenInput = document.getElementById("gh-token");
+        
         document.addEventListener("DOMContentLoaded", () => {
             const savedToken = localStorage.getItem("csa_gh_token");
-            if (savedToken) document.getElementById("gh-token").value = savedToken;
+            if (savedToken) tokenInput.value = savedToken;
         });
 
-        // AVTOMATİK UNİKAL ID YARATMA FUNKSİYASI
+        tokenInput.addEventListener("input", (e) => {
+            localStorage.setItem("csa_gh_token", e.target.value.trim());
+        });
+
+        // 2. AVTOMATİK ID YARATMA (6 Rəqəmli daha unikal)
         document.getElementById("btn-generate-id").addEventListener("click", () => {
             const year = new Date().getFullYear();
-            const randomCode = Math.floor(1000 + Math.random() * 9000); // 4 rəqəmli kod
+            const randomCode = Math.floor(100000 + Math.random() * 900000); 
             document.getElementById("cert-id").value = `CSA-${year}-${randomCode}`;
         });
 
+        // 3. ƏSAS YÜKLƏMƏ PROSESİ
         document.getElementById("admin-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btn-save");
             
-            const token = document.getElementById("gh-token").value.trim();
+            const token = tokenInput.value.trim();
             const id = document.getElementById("cert-id").value.trim().toUpperCase();
             const name = document.getElementById("student-name").value.trim();
             
@@ -113,54 +121,58 @@
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
             
-            localStorage.setItem("csa_gh_token", token);
             btn.disabled = true;
-            showStatus("Fayl GitHub-a yüklənir...", "info");
+            showStatus("Əvvəlcə baza yoxlanılır...", "info");
 
             try {
+                // ADIM A: BAZANI OXU VƏ DUBLİKAT YOXLAMASI ET (Fayl yüklənmədən öncə)
+                const dbPath = "database/db.json";
+                const dbData = await getGitHubFile(token, dbPath);
+                let dbContent = JSON.parse(decodeURIComponent(escape(atob(dbData.content))));
+
+                if (dbContent[id]) {
+                    showStatus(`XƏTA BAŞ VERDİ: <b>${id}</b> nömrəli sertifikat ID-si artıq bazada var! Zəhmət olmasa fərqli ID yazın.`, "error");
+                    btn.disabled = false;
+                    return; // Prosesi dərhal dayandır
+                }
+
+                // ADIM B: ƏGƏR ID YENİDİRSƏ, FAYLI YÜKLƏ
+                showStatus("Sertifikat bənzərsizdir. Fayl GitHub-a yüklənir...", "info");
                 const fileExt = file.name.split('.').pop().toLowerCase();
                 const filePath = `certificates/${id}.${fileExt}`;
                 const fileBase64 = await toBase64(file);
 
-                // 1. Şəkli yüklə
                 await uploadToGitHub(token, filePath, fileBase64, `Upload cert ${id}`);
+                
+                // ADIM C: BAZANI YENİLƏ
                 showStatus("Fayl yükləndi! Baza (db.json) yenilənir...", "info");
-
-                // 2. Təmiz JSON bazasını (db.json) oxu
-                const dbPath = "database/db.json";
-                const dbData = await getGitHubFile(token, dbPath);
                 
-                // Məlumatı JSON olaraq çeviririk
-                let dbContent = JSON.parse(decodeURIComponent(escape(atob(dbData.content))));
-
-                // --- YENİ QORUYUCU MEXANİZM ---
-                if (dbContent[id]) {
-                    showStatus(`XƏTA: <b>${id}</b> nömrəli sertifikat artıq bazada mövcuddur! Zəhmət olmasa "Avtomatik ID Yarat" düyməsinə bir daha basın.`, "error");
-                    btn.disabled = false;
-                    return; // Əgər ID varsa, prosesi dərhal dayandırır və bazanın korlanmasının qarşısını alır
-                }
-                // ------------------------------
-
-                // 3. Yeni tələbəni əlavə et
                 dbContent[id] = {
+                    name: name,
+                    course_az: courseAz,
+                    course_en: courseEn,
+                    date_az: dateAz,
+                    date_en: dateEn,
+                    file: filePath
+                };
 
-                // JSON-u yenidən Base64-ə çevir
                 const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(dbContent, null, 4))));
-                
-                // 4. Yenilənmiş db.json faylını geri yüklə
                 await uploadToGitHub(token, dbPath, updatedBase64, `Add ${id} to database`, dbData.sha);
 
                 showStatus(`Uğurla əlavə edildi! <br><br><a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}" target="_blank">Sertifikata Bax</a>`, "success");
                 
+                // Formu təmizlə, amma Tokeni saxla
                 document.getElementById("admin-form").reset();
-                document.getElementById("gh-token").value = token;
+                tokenInput.value = token;
+                
             } catch (err) {
-                showStatus("Xəta baş verdi: " + err.message, "error");
+                showStatus("SİSTEM XƏTASI: " + err.message, "error");
             } finally {
                 btn.disabled = false;
             }
         });
 
+        // Yardımçı Funksiyalar
         function toBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -174,7 +186,7 @@
             const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                 headers: { "Authorization": `token ${token}` }
             });
-            if (!res.ok) throw new Error("Fayl oxunmadı");
+            if (!res.ok) throw new Error("Məlumat bazası (db.json) tapılmadı və ya Token səhvdir.");
             return await res.json();
         }
 
