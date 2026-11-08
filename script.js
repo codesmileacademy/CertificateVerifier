@@ -1,24 +1,3 @@
-// Tələbə bazası
-const certificatesDB = {
-    "CSA-2026-001": {
-        name: "Əli Əliyev",
-        course_az: "Manual QA və SQL",
-        course_en: "Manual QA and SQL",
-        date_az: "15 Oktyabr 2026",
-        date_en: "October 15, 2026",
-        file: "certificates/CSA-2026-001.pdf"
-    },
-"DAC-2026-011-157": {
-        name: "Anar Mustafayev",
-        course_az: "Data Analitika",
-        course_en: "Data Analytics",
-        date_az: "09 Noyabr 2026",
-        date_en: "November 09, 2026",
-        file: "certificates/DAC-2026-011-157.png" // BURA DİQQƏT: .pdf yox, .png olmalıdır
-    }
-};
-
-// Tərcümə bazası
 const translations = {
     "az": {
         title: "SERTİFİKAT VERİFİKASİYA PORTALI",
@@ -54,6 +33,7 @@ const translations = {
 
 let currentLang = "az";
 let currentSearchedId = null;
+let certificatesDB = {}; // Baza artıq kənardan gələcək
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("verify-form");
@@ -62,12 +42,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultCard = document.getElementById("result-card");
     const notFound = document.getElementById("not-found");
     
-    // Nəticə elementləri
     const resName = document.getElementById("res-name");
     const resCourse = document.getElementById("res-course");
     const resDate = document.getElementById("res-date");
     const resId = document.getElementById("res-id");
     const resLink = document.getElementById("res-link");
+
+    // Əvvəlcə bazanı (db.json) yükləyirik
+    fetch('database/db.json')
+        .then(response => response.json())
+        .then(data => {
+            certificatesDB = data;
+            
+            // Baza yükləndikdən sonra URL-də ID varsa yoxla
+            const urlParams = new URLSearchParams(window.location.search);
+            const idFromUrl = urlParams.get('id');
+            if (idFromUrl) {
+                input.value = idFromUrl;
+                verifyCertificate(idFromUrl);
+            }
+        })
+        .catch(err => console.error("Baza oxunmadı:", err));
 
     // Dil dəyişdirmə məntiqi
     document.getElementById("btn-az").addEventListener("click", () => switchLang("az"));
@@ -75,12 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function switchLang(lang) {
         currentLang = lang;
-        
-        // Butonların rəngini dəyişmə
         document.getElementById("btn-az").classList.toggle("active", lang === "az");
         document.getElementById("btn-en").classList.toggle("active", lang === "en");
 
-        // Statik mətnlərin tərcüməsi
         document.getElementById("t-title").textContent = translations[lang].title;
         document.getElementById("t-subtitle").textContent = translations[lang].subtitle;
         document.getElementById("cert-id").placeholder = translations[lang].placeholder;
@@ -91,31 +83,16 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("t-lbl-course").textContent = translations[lang].lblCourse;
         document.getElementById("t-lbl-date").textContent = translations[lang].lblDate;
         document.getElementById("t-lbl-id").textContent = translations[lang].lblId;
-        document.getElementById("res-link").textContent = translations[lang].btnPdf;;
-        
+        document.getElementById("t-btn-pdf").textContent = translations[lang].btnPdf;
         document.getElementById("t-footer").innerHTML = translations[lang].footer;
 
-        // Xəta pəncərələrinin tərcüməsi
-        if (!notFound.classList.contains("hidden")) {
-            notFound.textContent = translations[lang].notFound;
-        }
-        if (!errorMsg.classList.contains("hidden")) {
-            errorMsg.textContent = translations[lang].errorEmpty;
-        }
+        if (!notFound.classList.contains("hidden")) notFound.textContent = translations[lang].notFound;
+        if (!errorMsg.classList.contains("hidden")) errorMsg.textContent = translations[lang].errorEmpty;
 
-        // Tələbə məlumatlarının tərcüməsi
         if (currentSearchedId && certificatesDB[currentSearchedId]) {
             resCourse.textContent = lang === "az" ? certificatesDB[currentSearchedId].course_az : certificatesDB[currentSearchedId].course_en;
             resDate.textContent = lang === "az" ? certificatesDB[currentSearchedId].date_az : certificatesDB[currentSearchedId].date_en;
         }
-    }
-
-    // Axtarış funksiyası
-    const urlParams = new URLSearchParams(window.location.search);
-    const idFromUrl = urlParams.get('id');
-    if (idFromUrl) {
-        input.value = idFromUrl;
-        verifyCertificate(idFromUrl);
     }
 
     form.addEventListener("submit", (e) => {
