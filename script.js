@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("t-lbl-course").textContent = translations[lang].lblCourse;
         document.getElementById("t-lbl-date").textContent = translations[lang].lblDate;
         document.getElementById("t-lbl-id").textContent = translations[lang].lblId;
-        document.getElementById("t-btn-pdf").textContent = translations[lang].btnPdf;
+        document.getElementById("res-link").textContent = translations[lang].btnPdf;;
         document.getElementById("t-footer").innerHTML = translations[lang].footer;
 
         if (!notFound.classList.contains("hidden")) notFound.textContent = translations[lang].notFound;
