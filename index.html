@@ -4,51 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sertifikat Verifikasiya Portalı | CodeSmile Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    
-    <style>
-        .lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--accent-yellow);
-            border-radius: 8px;
-            padding: 5px;
-            display: flex;
-            gap: 5px;
-            z-index: 10;
-        }
-        .lang-btn {
-            background: transparent;
-            color: #94a3b8;
-            border: none;
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        .lang-btn.active {
-            background: var(--accent-yellow);
-            color: #000;
-        }
-        @media (max-width: 480px) {
-            .lang-switch { top: 15px; right: 15px; }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- DİL DƏYİŞDİRMƏ PANELİ -->
-    <div class="lang-switch">
-        <button class="lang-btn active" id="btn-az">AZ</button>
-        <button class="lang-btn" id="btn-en">EN</button>
+    <!-- ARXA PLAN: HƏRƏKƏTLİ KODLAR (MATRIX) -->
+    <div class="matrix-bg">
+        <!-- Sol Sütun (Notbuk üçün) -->
+        <div class="code-col left">
+[SYSTEM START]
+Loading modules...
+[OK] Crypto engine loaded.
+[OK] Auth verified.
+
+async function verifyCert(id) {
+  const res = await db.query(
+    "SELECT * FROM certs WHERE id=$1",
+    [id]
+  );
+  if(res.isValid) return 200;
+}
+> AWAITING REQUEST...
+        </div>
+        
+        <!-- Mərkəz Sütun (Mobil üçün) -->
+        <div class="code-col center">
+01000011 01101111 01100100 01100101
+> SECURE CONNECTION ESTABLISHED
+> WAITING FOR VERIFICATION ID...
+[SYSTEM_READY: TRUE]
+        </div>
+
+        <!-- Sağ Sütun (Notbuk üçün) -->
+        <div class="code-col right">
+{
+  "status": 200,
+  "data": {
+    "cert_id": "CSA-2026",
+    "valid": true,
+    "issuer": "CodeSmile",
+    "signature": "0x8f3c...a1b2",
+    "timestamp": 17310899
+  }
+}
+> Executing query...
+> 1 row retrieved.
+        </div>
     </div>
 
+    <!-- ƏSAS KONTEYNER -->
     <div class="container">
+        
+        <!-- Üst Panel (Dil Düymələri üçün - Üst-üstə düşmənin qarşısını alır) -->
+        <div class="top-bar">
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btn-az">AZ</button>
+                <button class="lang-btn" id="btn-en">EN</button>
+            </div>
+        </div>
+
         <header class="header">
             <img src="logo.png" alt="CodeSmile Academy" class="brand-logo">
             <h1 class="page-title" id="t-title">SERTİFİKAT VERİFİKASİYA PORTALI</h1>
