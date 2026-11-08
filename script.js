@@ -8,13 +8,13 @@ const certificatesDB = {
         date_en: "October 15, 2026",
         file: "certificates/CSA-2026-001.pdf"
     },
-    "DAC-2026-011-157": {
+"DAC-2026-011-157": {
         name: "Anar Mustafayev",
         course_az: "Data Analitika",
         course_en: "Data Analytics",
         date_az: "09 Noyabr 2026",
         date_en: "November 09, 2026",
-        file: "certificates/DAC-2026-011-157.pdf"
+        file: "certificates/DAC-2026-011-157.png" // BURA DİQQƏT: .pdf yox, .png olmalıdır
     }
 };
 
