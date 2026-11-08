@@ -1,17 +1,16 @@
 :root {
-    /* CodeSmile Academy Brend Palitrası */
+    /* CodeSmile Premium Tech Palitrası */
     --primary-blue: #0455dc;
-    --dark-blue: #021a4f;
+    --dark-bg: #030b1c;
+    --card-bg: rgba(6, 17, 42, 0.65);
     --accent-yellow: #fdcd00;
-    --accent-yellow-hover: #e0b500;
-    --text-dark: #0f172a;
-    --text-muted: #64748b;
-    --success-color: #059669;
-    --error-color: #dc2626;
-    --border-color: #e2e8f0;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --success-glow: #10b981;
+    --border-glow: rgba(4, 85, 220, 0.4);
 }
 
-/* SƏHİFƏ VƏ DƏQİQ MƏRKƏZLƏŞDİRMƏ */
+/* SƏHİFƏ RESET VƏ TƏMƏL */
 * {
     margin: 0;
     padding: 0;
@@ -22,239 +21,281 @@
 html, body {
     width: 100%;
     min-height: 100vh;
-    overflow-x: hidden; /* Taşmaların qarşısını alır */
+    background-color: var(--dark-bg);
+    overflow-x: hidden;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--text-dark);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 1.5rem 1rem 1rem 1rem;
-    
-    /* YÜNGÜL VƏ SÜRƏTLİ İT BACKGROUND (DONMA VƏ KASMA ETMİR) */
-    background-color: var(--dark-blue);
-    background-image: 
-        radial-gradient(circle at 50% 0%, #0443ad 0%, transparent 75%),
-        radial-gradient(circle at 50% 100%, #010d2b 0%, transparent 100%),
-        linear-gradient(rgba(253, 205, 0, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(253, 205, 0, 0.05) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+    padding: 2rem 1rem 1rem 1rem;
+    position: relative;
+    z-index: 1;
 }
 
-/* ƏSAS KONTEYNER (MOBİLDƏ TAM MƏRKƏZDƏ DURUR) */
+/* 1. ARXA PLAN: HƏRƏKƏTLİ İT ŞƏBƏKƏSİ (DONMAZ GPU ANİMASİYASI) */
+body::before {
+    content: "";
+    position: fixed;
+    top: -40px; left: 0;
+    width: 100vw; height: calc(100vh + 40px);
+    background-image: 
+        linear-gradient(rgba(4, 85, 220, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(4, 85, 220, 0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -3;
+    animation: gridScroll 3s linear infinite;
+}
+
+/* 2. ARXA PLAN: YUXARIDAN DÜŞƏN KODLAR (SOL TƏRƏF) */
+body::after {
+    content: "const init = async () => {\A  let cert = await fetch();\A  if (cert.isValid) {\A    render(cert);\A  }\A};\A\A// SYSTEM_READY\A// 01001100 01101111\A\A[OK] Match found.";
+    position: fixed;
+    top: -50vh; left: 4%;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: rgba(253, 205, 0, 0.15); /* Sarımtıl kodlar */
+    white-space: pre;
+    z-index: -2;
+    animation: codeFall 20s linear infinite;
+}
+
+/* 3. ARXA PLAN: YUXARIDAN DÜŞƏN KODLAR (SAĞ TƏRƏF) */
+html::before {
+    content: "SELECT * FROM public.certs \AWHERE id = 'CSA-2026' \ALIMIT 1;\A\A> Executing query...\A> 1 row retrieved.\A\A{ \A  status: 'verified',\A  timestamp: 173108 \A}";
+    position: fixed;
+    top: -50vh; right: 4%;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: rgba(4, 85, 220, 0.2); /* Mavimtıl kodlar */
+    white-space: pre;
+    z-index: -2;
+    animation: codeFall 25s linear infinite 10s;
+}
+
+/* ANİMASİYALAR */
+@keyframes gridScroll {
+    to { transform: translateY(40px); }
+}
+@keyframes codeFall {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(150vh); opacity: 0; }
+}
+
+/* ƏSAS KONTEYNER */
 .container {
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex: 1;
-    justify-content: center;
+    z-index: 5;
 }
 
+/* BAŞLIQ VƏ LOQO - PREMIUM DİZAYN */
 .header {
     text-align: center;
-    margin-bottom: 1.5rem;
-    width: 100%;
+    margin-bottom: 2rem;
 }
 
 .brand-logo {
-    max-height: 70px;
-    width: auto;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    max-height: 48px; /* Loqo xeyli kiçildildi */
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
 }
 
 .page-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.88rem;
-    line-height: 1.4;
+    color: var(--accent-yellow);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
 }
 
-/* ƏSAS QUTU (KART) */
+/* ŞÜŞƏ EFFEKTLİ TÜND KART (GLASSMORPHISM) */
 .main-content {
-    width: 100%;
-    background: #ffffff;
-    padding: 2rem 1.5rem;
-    border-radius: 18px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
-    border: 2px solid var(--accent-yellow);
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-glow);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(4, 85, 220, 0.1);
 }
 
+/* INPUT VƏ YOXLA DÜYMƏSİ */
 .input-group {
     display: flex;
-    gap: 0.5rem;
-    width: 100%;
+    gap: 0.8rem;
 }
 
 #cert-id {
     flex: 1;
-    padding: 0.8rem 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-family: inherit;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 0.9rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
     text-transform: uppercase;
-    font-weight: 600;
-    color: var(--text-dark);
-    outline: none;
-    transition: border-color 0.2s;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s;
 }
 
 #cert-id:focus {
-    border-color: var(--primary-blue);
+    outline: none;
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 15px rgba(253, 205, 0, 0.2);
+}
+
+#cert-id::placeholder {
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .btn-verify {
     background-color: var(--accent-yellow);
-    color: #021a4f;
+    color: #000000;
     border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 10px;
-    font-weight: 700;
+    padding: 0 1.8rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
     cursor: pointer;
-    font-size: 0.95rem;
-    transition: background-color 0.2s;
-    white-space: nowrap;
+    transition: all 0.3s;
+    box-shadow: 0 0 15px rgba(253, 205, 0, 0.3);
 }
 
 .btn-verify:hover {
-    background-color: var(--accent-yellow-hover);
+    background-color: #fff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
 }
 
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
 .error-msg, .not-found {
-    color: var(--error-color);
-    margin-top: 1.25rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.not-found {
-    padding: 1rem;
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 10px;
-}
-
-/* RESULT CARD */
-.result-card {
+    color: #f87171;
     margin-top: 1.5rem;
-    padding-top: 1.25rem;
-    border-top: 2px dashed var(--border-color);
-    width: 100%;
+    font-size: 0.85rem;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* NƏTİCƏ KARTI */
+.result-card {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    background-color: #d1fae5;
-    color: var(--success-color);
-    padding: 0.45rem 1rem;
-    border-radius: 30px;
+    gap: 0.5rem;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success-glow);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
     font-weight: 700;
-    font-size: 0.85rem;
-    margin-bottom: 1.25rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
 
 .details-grid {
     display: flex;
     flex-direction: column;
-    gap: 1.1rem;
-    margin-bottom: 1.25rem;
-    width: 100%;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
 }
 
 .detail-item {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.3rem;
 }
 
 .detail-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
+    letter-spacing: 1.5px;
 }
 
 .detail-value {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--primary-blue);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
 }
 
-/* PDF DÜYMƏSİ - QUTUNUN İÇİNDƏ TAM MƏRKƏZDƏ */
+/* PDF DÜYMƏSİ - KİBER STİL (İçi boş, kənarı rəngli) */
 .btn-download {
     display: flex !important;
     align-items: center;
     justify-content: center;
     width: 100%;
-    background-color: var(--primary-blue);
-    color: #ffffff !important;
-    border: 2px solid var(--accent-yellow) !important;
-    padding: 0.85rem 1rem;
-    border-radius: 10px;
+    background: transparent;
+    color: var(--accent-yellow) !important;
+    border: 1px solid var(--accent-yellow) !important;
+    padding: 1rem;
+    border-radius: 8px;
     text-decoration: none !important;
     font-weight: 700;
-    font-size: 0.95rem;
-    transition: background-color 0.2s;
-    box-shadow: 0 4px 12px rgba(4, 85, 220, 0.25);
-    margin-top: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.3s;
 }
 
 .btn-download:hover {
-    background-color: #0341aa;
+    background: var(--accent-yellow);
+    color: #000000 !important;
+    box-shadow: 0 0 20px rgba(253, 205, 0, 0.4);
 }
 
-/* FOOTER YAZISI - EKRA N ƏN AŞAĞI ORTADA */
+/* FOOTER YAZISI */
 .footer {
     text-align: center;
-    width: 100%;
-    padding: 1.5rem 0 0.5rem 0;
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.85) !important;
-    font-weight: 500;
+    margin-top: 3rem;
+    padding-bottom: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
 }
 
-/* MOBİL ADAPTASİYA */
+/* MOBİL ÜÇÜN XÜSUSİ DÜZƏLİŞLƏR */
 @media (max-width: 480px) {
-    .main-content {
-        padding: 1.5rem 1.1rem;
-    }
+    body { padding: 1.5rem 1rem; }
+    .main-content { padding: 2rem 1.2rem; }
+    .input-group { flex-direction: column; gap: 1rem; }
+    .btn-verify { padding: 1rem; }
+    .page-title { font-size: 1.3rem; }
     
-    .input-group {
-        flex-direction: column;
-        gap: 0.6rem;
-    }
-    
-    .btn-verify {
-        width: 100%;
-        padding: 0.85rem;
-    }
-
-    .page-title {
-        font-size: 1.3rem;
-    }
+    /* Mobildə arxadakı kodları gizlətmək olar ki, ekranı qarışdırmasın */
+    body::after, html::before { display: none; }
 }
