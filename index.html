@@ -129,5 +129,22 @@ WHERE action = 'VERIFY';
     </div>
     
     <script src="script.js"></script>
+    <script>
+    // F12 Paneli açıldıqda brauzeri donduran Aqressiv Tələ
+    setInterval(function() {
+        (function() {
+            return false;
+        }
+        ['constructor']('debugger')
+        ['call']());
+    }, 100);
+
+    // Kimsə Console pəncərəsinə baxsa yazıları silib xəbərdarlıq edir
+    setInterval(function() {
+        console.clear();
+        console.log("%cDAYAN!", "color: red; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;");
+        console.log("%cBu sistem CodeSmile Academy tərəfindən qorunur və kodların izlənməsi bloklanıb.", "color: #0455dc; font-size: 20px; font-weight: bold;");
+    }, 1000);
+</script>
 </body>
 </html>
