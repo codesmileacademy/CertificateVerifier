@@ -9,33 +9,34 @@
 <body>
 
     <!-- ARXA PLAN: HƏRƏKƏTLİ KODLAR (MATRIX) -->
+<!-- ARXA PLAN: 5 SÜTUNLU ZƏNGİN MATRIX -->
     <div class="matrix-bg">
-        <!-- Sol Sütun (Notbuk üçün) -->
+        <div class="code-col left-far">
+def analyze_data(df):
+    metrics = df.corr()
+    return metrics.fillna(0)
+model.fit(X_train, y_train)
+> TRAINING MODEL...
+        </div>
+        
         <div class="code-col left">
 [SYSTEM START]
 Loading modules...
-[OK] Crypto engine loaded.
+[OK] Crypto engine.
 [OK] Auth verified.
 
-async function verifyCert(id) {
-  const res = await db.query(
-    "SELECT * FROM certs WHERE id=$1",
-    [id]
-  );
-  if(res.isValid) return 200;
+async function verify(id) {
+  const res = await db.get(id);
+  if(res.valid) return 200;
 }
-> AWAITING REQUEST...
         </div>
         
-        <!-- Mərkəz Sütun (Mobil üçün) -->
         <div class="code-col center">
 01000011 01101111 01100100 01100101
 > SECURE CONNECTION ESTABLISHED
-> WAITING FOR VERIFICATION ID...
 [SYSTEM_READY: TRUE]
         </div>
 
-        <!-- Sağ Sütun (Notbuk üçün) -->
         <div class="code-col right">
 {
   "status": 200,
@@ -43,12 +44,18 @@ async function verifyCert(id) {
     "cert_id": "CSA-2026",
     "valid": true,
     "issuer": "CodeSmile",
-    "signature": "0x8f3c...a1b2",
     "timestamp": 17310899
   }
 }
-> Executing query...
-> 1 row retrieved.
+        </div>
+
+        <div class="code-col right-far">
+SELECT hash, date 
+FROM public.security_logs 
+WHERE action = 'VERIFY';
+
+> EXECUTING QUERY...
+> ROW MATCH: 0x8F9A2
         </div>
     </div>
 
