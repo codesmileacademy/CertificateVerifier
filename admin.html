@@ -133,15 +133,16 @@
                 // Məlumatı JSON olaraq çeviririk
                 let dbContent = JSON.parse(decodeURIComponent(escape(atob(dbData.content))));
 
+                // --- YENİ QORUYUCU MEXANİZM ---
+                if (dbContent[id]) {
+                    showStatus(`XƏTA: <b>${id}</b> nömrəli sertifikat artıq bazada mövcuddur! Zəhmət olmasa "Avtomatik ID Yarat" düyməsinə bir daha basın.`, "error");
+                    btn.disabled = false;
+                    return; // Əgər ID varsa, prosesi dərhal dayandırır və bazanın korlanmasının qarşısını alır
+                }
+                // ------------------------------
+
                 // 3. Yeni tələbəni əlavə et
                 dbContent[id] = {
-                    name: name,
-                    course_az: courseAz,
-                    course_en: courseEn,
-                    date_az: dateAz,
-                    date_en: dateEn,
-                    file: filePath
-                };
 
                 // JSON-u yenidən Base64-ə çevir
                 const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(dbContent, null, 4))));
