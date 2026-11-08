@@ -1,8 +1,7 @@
 :root {
-    /* CodeSmile Premium Tech Palitrası */
     --primary-blue: #0455dc;
     --dark-bg: #030b1c;
-    --card-bg: rgba(6, 17, 42, 0.65);
+    --card-bg: rgba(6, 17, 42, 0.7);
     --accent-yellow: #fdcd00;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
@@ -10,7 +9,6 @@
     --border-glow: rgba(4, 85, 220, 0.4);
 }
 
-/* SƏHİFƏ RESET VƏ TƏMƏL */
 * {
     margin: 0;
     padding: 0;
@@ -25,70 +23,88 @@ html, body {
     overflow-x: hidden;
 }
 
+/* ŞRİFT PROBLEMİ HƏLL EDİLDİ - Original Sistem Şriftləri */
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text-main);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 2rem 1rem 1rem 1rem;
+    padding: 1rem;
     position: relative;
     z-index: 1;
 }
 
-/* 1. ARXA PLAN: HƏRƏKƏTLİ İT ŞƏBƏKƏSİ (DONMAZ GPU ANİMASİYASI) */
+/* ARXA PLAN İT ŞƏBƏKƏSİ */
 body::before {
     content: "";
     position: fixed;
     top: -40px; left: 0;
     width: 100vw; height: calc(100vh + 40px);
     background-image: 
-        linear-gradient(rgba(4, 85, 220, 0.15) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(4, 85, 220, 0.15) 1px, transparent 1px);
+        linear-gradient(rgba(4, 85, 220, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(4, 85, 220, 0.12) 1px, transparent 1px);
     background-size: 40px 40px;
     z-index: -3;
-    animation: gridScroll 3s linear infinite;
+    animation: gridScroll 4s linear infinite;
+    pointer-events: none;
 }
 
-/* 2. ARXA PLAN: YUXARIDAN DÜŞƏN KODLAR (SOL TƏRƏF) */
-body::after {
-    content: "const init = async () => {\A  let cert = await fetch();\A  if (cert.isValid) {\A    render(cert);\A  }\A};\A\A// SYSTEM_READY\A// 01001100 01101111\A\A[OK] Match found.";
-    position: fixed;
-    top: -50vh; left: 4%;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    color: rgba(253, 205, 0, 0.15); /* Sarımtıl kodlar */
-    white-space: pre;
-    z-index: -2;
-    animation: codeFall 20s linear infinite;
-}
-
-/* 3. ARXA PLAN: YUXARIDAN DÜŞƏN KODLAR (SAĞ TƏRƏF) */
-html::before {
-    content: "SELECT * FROM public.certs \AWHERE id = 'CSA-2026' \ALIMIT 1;\A\A> Executing query...\A> 1 row retrieved.\A\A{ \A  status: 'verified',\A  timestamp: 173108 \A}";
-    position: fixed;
-    top: -50vh; right: 4%;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    color: rgba(4, 85, 220, 0.2); /* Mavimtıl kodlar */
-    white-space: pre;
-    z-index: -2;
-    animation: codeFall 25s linear infinite 10s;
-}
-
-/* ANİMASİYALAR */
 @keyframes gridScroll {
     to { transform: translateY(40px); }
 }
-@keyframes codeFall {
-    0% { transform: translateY(0); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(150vh); opacity: 0; }
+
+/* HƏRƏKƏTLİ KODLAR (MATRIX EFFECT) */
+.matrix-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
 }
 
-/* ƏSAS KONTEYNER */
+.code-col {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    animation: codeFall 25s linear infinite;
+}
+
+.code-col.left {
+    left: 4%;
+    color: rgba(4, 85, 220, 0.4);
+    animation-duration: 22s;
+}
+
+.code-col.right {
+    right: 4%;
+    color: rgba(253, 205, 0, 0.3);
+    animation-duration: 28s;
+    animation-delay: -5s;
+}
+
+.code-col.center {
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.06);
+    animation-duration: 18s;
+    animation-delay: -10s;
+    width: 90%;
+    text-align: center;
+    font-size: 12px;
+}
+
+@keyframes codeFall {
+    0% { top: -50%; opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* ƏSAS KONTEYNER VƏ ÜST PANEL */
 .container {
     width: 100%;
     max-width: 520px;
@@ -96,16 +112,52 @@ html::before {
     display: flex;
     flex-direction: column;
     z-index: 5;
+    min-height: 95vh;
 }
 
-/* BAŞLIQ VƏ LOQO - PREMIUM DİZAYN */
+/* YENİ TOP BAR - LOGO İLƏ KƏSİŞMƏNİ ƏNGƏLLƏYİR */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    padding-top: 0.5rem;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.lang-btn {
+    background: transparent;
+    color: #94a3b8;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.lang-btn.active {
+    background: var(--accent-yellow);
+    color: #000;
+}
+
+/* BAŞLIQ */
 .header {
     text-align: center;
     margin-bottom: 2rem;
 }
 
 .brand-logo {
-    max-height: 48px; /* Loqo xeyli kiçildildi */
+    max-height: 55px;
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
 }
@@ -127,9 +179,10 @@ html::before {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 600;
+    line-height: 1.4;
 }
 
-/* ŞÜŞƏ EFFEKTLİ TÜND KART (GLASSMORPHISM) */
+/* KART DİZAYNI */
 .main-content {
     background: var(--card-bg);
     backdrop-filter: blur(16px);
@@ -140,7 +193,6 @@ html::before {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(4, 85, 220, 0.1);
 }
 
-/* INPUT VƏ YOXLA DÜYMƏSİ */
 .input-group {
     display: flex;
     gap: 0.8rem;
@@ -154,7 +206,7 @@ html::before {
     padding: 0.9rem 1.2rem;
     border-radius: 8px;
     font-size: 1rem;
-    font-family: 'Courier New', monospace;
+    font-family: inherit;
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 1px;
@@ -253,7 +305,6 @@ html::before {
     letter-spacing: 0.5px;
 }
 
-/* PDF DÜYMƏSİ - KİBER STİL (İçi boş, kənarı rəngli) */
 .btn-download {
     display: flex !important;
     align-items: center;
@@ -278,24 +329,30 @@ html::before {
     box-shadow: 0 0 20px rgba(253, 205, 0, 0.4);
 }
 
-/* FOOTER YAZISI */
+/* FOOTER */
 .footer {
     text-align: center;
-    margin-top: 3rem;
-    padding-bottom: 1rem;
+    margin-top: auto;
+    padding: 2rem 0 1rem 0;
     font-size: 0.75rem;
     color: var(--text-muted);
     letter-spacing: 1px;
 }
 
-/* MOBİL ÜÇÜN XÜSUSİ DÜZƏLİŞLƏR */
+/* MOBİL ADAPTASİYA */
+@media (max-width: 768px) {
+    .code-col.left, .code-col.right { 
+        display: none; /* Mobildə kənardakı kodlar gizlənir */
+    }
+    .code-col.center {
+        color: rgba(253, 205, 0, 0.12); /* Mobildə mərkəzdəki kodlar şəffaf görünür */
+    }
+}
+
 @media (max-width: 480px) {
-    body { padding: 1.5rem 1rem; }
     .main-content { padding: 2rem 1.2rem; }
     .input-group { flex-direction: column; gap: 1rem; }
     .btn-verify { padding: 1rem; }
     .page-title { font-size: 1.3rem; }
-    
-    /* Mobildə arxadakı kodları gizlətmək olar ki, ekranı qarışdırmasın */
-    body::after, html::before { display: none; }
+    .brand-logo { max-height: 45px; }
 }
