@@ -1,18 +1,3 @@
 {
-    "CSA-2026-001": {
-        "name": "Əli Əliyev",
-        "course_az": "Manual QA və SQL",
-        "course_en": "Manual QA and SQL",
-        "date_az": "15 Oktyabr 2026",
-        "date_en": "October 15, 2026",
-        "file": "certificates/CSA-2026-001.pdf"
-    },
-    "DAC-2026-011-157": {
-        "name": "Anar Mustafayev",
-        "course_az": "Data Analitika",
-        "course_en": "Data Analytics",
-        "date_az": "09 Noyabr 2026",
-        "date_en": "November 09, 2026",
-        "file": "certificates/DAC-2026-011-157.png"
-    }
+    "encrypted_data": "eyJDU0EtMjAyNi0wMDEiOnsibmFtZSI6IsaPbGkgxo9saXlldiIsImNvdXJzZV9heiI6Ik1hbnVhbCBRQSB2yZkgU1FMIiwiY291cnNlX2VuIjoiTWFudWFsIFFBIGFuZCBTUUwiLCJkYXRlX2F6IjoiMTUgT2t0eWFiciAyMDI2IiwiZGF0ZV9lbiI6Ik9jdG9iZXIgMTUsIDIwMjYiLCJmaWxlIjoiY2VydGlmaWNhdGVzL0NTQS0yMDI2LTAwMS5wZGYifSwiREFDLTIwMjYtMDExLTE1NyI6eyJuYW1lIjoiQW5hciBNdXN0YWZheWV2IiwiY291cnNlX2F6IjoiRGF0YSBBbmFsaXRpa2EiLCJjb3Vyc2VfZW4iOiJEYXRhIEFuYWx5dGljcyIsImRhdGVfYXoiOiIwOSBOb3lhYnIgMjAyNiIsImRhdGVfZW4iOiJOb3ZlbWJlciAwOSwgMjAyNiIsImZpbGUiOiJjZXJ0aWZpY2F0ZXMvREFDLTIwMjYtMDExLTE1Ny5wbmcifSwiQ1NBLTIwMjYtMjUwMDIzIjp7Im5hbWUiOiJyc3l0cnkiLCJjb3Vyc2VfYXoiOiJydHl0cnkiLCJjb3Vyc2VfZW4iOiJydHl0cnkiLCJkYXRlX2F6IjoicnR5dHIiLCJkYXRlX2VuIjoicnR5dHIiLCJmaWxlIjoiY2VydGlmaWNhdGVzL0NTQS0yMDI2LTI1MDAyMy5wbmcifX0="
 }
