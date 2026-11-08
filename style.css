@@ -55,7 +55,7 @@ body::before {
     to { transform: translateY(40px); }
 }
 
-/* HƏRƏKƏTLİ KODLAR (MATRIX EFFECT) */
+/* HƏRƏKƏTLİ KODLAR (5 SÜTUNLU MATRIX EFFECT) */
 .matrix-bg {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
@@ -73,23 +73,24 @@ body::before {
     animation: codeFall 25s linear infinite;
 }
 
-.code-col.left {
-    left: 4%;
-    color: rgba(4, 85, 220, 0.4);
-    animation-duration: 22s;
+.code-col.left-far {
+    left: 2%;
+    color: rgba(16, 185, 129, 0.25); /* Yaşıl rəng (Python) */
+    animation-duration: 20s;
+    animation-delay: -2s;
 }
 
-.code-col.right {
-    right: 4%;
-    color: rgba(253, 205, 0, 0.3);
-    animation-duration: 28s;
-    animation-delay: -5s;
+.code-col.left {
+    left: 18%;
+    color: rgba(4, 85, 220, 0.4); /* Mavi (JS) */
+    animation-duration: 26s;
+    animation-delay: -7s;
 }
 
 .code-col.center {
     left: 50%;
     transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.08);
     animation-duration: 18s;
     animation-delay: -10s;
     width: 90%;
@@ -97,11 +98,33 @@ body::before {
     font-size: 12px;
 }
 
+.code-col.right {
+    right: 18%;
+    color: rgba(253, 205, 0, 0.3); /* Sarı (JSON) */
+    animation-duration: 24s;
+    animation-delay: -5s;
+}
+
+.code-col.right-far {
+    right: 2%;
+    color: rgba(239, 68, 68, 0.25); /* Qırmızımtıl (SQL) */
+    animation-duration: 30s;
+    animation-delay: -12s;
+}
+
 @keyframes codeFall {
     0% { top: -50%; opacity: 0; }
     10% { opacity: 1; }
     80% { opacity: 1; }
     100% { top: 100%; opacity: 0; }
+}
+
+@media (max-width: 992px) {
+    .code-col.left-far, .code-col.right-far { display: none; }
+}
+@media (max-width: 768px) {
+    .code-col.left, .code-col.right { display: none; }
+    .code-col.center { color: rgba(253, 205, 0, 0.12); }
 }
 
 /* ƏSAS KONTEYNER VƏ ÜST PANEL */
