@@ -14,6 +14,10 @@
         input { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; }
         .row { display: flex; gap: 15px; }
         .row .form-group { flex: 1; }
+        .id-group { display: flex; gap: 10px; }
+        .id-group input { flex: 1; font-weight: bold; color: #0455dc; }
+        .btn-gen { background: #fdcd00; color: #000; font-weight: bold; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-gen:hover { background: #e0b500; }
         .btn-submit { background: #0455dc; color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 1rem; transition: 0.2s; }
         .btn-submit:hover { background: #0342b0; }
         .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 6px; text-align: center; display: none; font-weight: 500;}
@@ -30,36 +34,39 @@
                 <label>GitHub Access Token:</label>
                 <input type="password" id="gh-token" required>
             </div>
+            
             <div class="form-group">
-                <label>Sertifikat ID (Məs: CSA-2026-002):</label>
-                <input type="text" id="cert-id" required>
+                <label>Sertifikat ID (Özünüz yazın və ya avtomatik yaradın):</label>
+                <div class="id-group">
+                    <input type="text" id="cert-id" placeholder="Məs: CSA-2026-1234" required>
+                    <button type="button" class="btn-gen" id="btn-generate-id">Avtomatik ID Yarat</button>
+                </div>
             </div>
+
             <div class="form-group">
                 <label>Tələbənin Adı və Soyadı:</label>
                 <input type="text" id="student-name" required>
             </div>
 
-            <!-- 2 DİLLİ XANALAR (KURS) -->
             <div class="row">
                 <div class="form-group">
                     <label>Tədris Proqramı (AZ):</label>
-                    <input type="text" id="course-az" placeholder="Məs: Manual QA və SQL" required>
+                    <input type="text" id="course-az" required>
                 </div>
                 <div class="form-group">
                     <label>Training Program (EN):</label>
-                    <input type="text" id="course-en" placeholder="Məs: Manual QA and SQL" required>
+                    <input type="text" id="course-en" required>
                 </div>
             </div>
 
-            <!-- 2 DİLLİ XANALAR (TARİX) -->
             <div class="row">
                 <div class="form-group">
                     <label>Verilmə Tarixi (AZ):</label>
-                    <input type="text" id="date-az" placeholder="Məs: 15 Oktyabr 2026" required>
+                    <input type="text" id="date-az" required>
                 </div>
                 <div class="form-group">
                     <label>Issue Date (EN):</label>
-                    <input type="text" id="date-en" placeholder="Məs: October 15, 2026" required>
+                    <input type="text" id="date-en" required>
                 </div>
             </div>
 
@@ -68,7 +75,7 @@
                 <input type="file" id="cert-file" accept=".pdf,.png,.jpg,.jpeg" required>
             </div>
 
-            <button type="submit" class="btn-submit" id="btn-save">Bazaya Əlavə Et</button>
+            <button type="submit" class="btn-submit" id="btn-save">Sertifikatı Bazaya Yüklə</button>
         </form>
         <div id="status-box" class="status-msg"></div>
     </div>
@@ -80,6 +87,13 @@
         document.addEventListener("DOMContentLoaded", () => {
             const savedToken = localStorage.getItem("csa_gh_token");
             if (savedToken) document.getElementById("gh-token").value = savedToken;
+        });
+
+        // AVTOMATİK UNİKAL ID YARATMA FUNKSİYASI
+        document.getElementById("btn-generate-id").addEventListener("click", () => {
+            const year = new Date().getFullYear();
+            const randomCode = Math.floor(1000 + Math.random() * 9000); // 4 rəqəmli kod
+            document.getElementById("cert-id").value = `CSA-${year}-${randomCode}`;
         });
 
         document.getElementById("admin-form").addEventListener("submit", async (e) => {
@@ -96,40 +110,47 @@
             const dateEn = document.getElementById("date-en").value.trim();
             
             const fileInput = document.getElementById("cert-file");
-
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
             
             localStorage.setItem("csa_gh_token", token);
             btn.disabled = true;
-            showStatus("Sertifikat GitHub-a yüklənir...", "info");
+            showStatus("Fayl GitHub-a yüklənir...", "info");
 
             try {
                 const fileExt = file.name.split('.').pop().toLowerCase();
                 const filePath = `certificates/${id}.${fileExt}`;
                 const fileBase64 = await toBase64(file);
 
-                // 1. Şəkli/PDF-i yüklə
+                // 1. Şəkli yüklə
                 await uploadToGitHub(token, filePath, fileBase64, `Upload cert ${id}`);
-                showStatus("Fayl yükləndi! Baza (script.js) yenilənir...", "info");
+                showStatus("Fayl yükləndi! Baza (db.json) yenilənir...", "info");
 
-                // 2. script.js faylını oxu və 2 dilli bazaya əlavə et
-                const scriptPath = "script.js";
-                const scriptData = await getGitHubFile(token, scriptPath);
-                let scriptContent = decodeURIComponent(escape(atob(scriptData.content)));
-
-                const newRecord = `    "${id}": {\n        name: "${name}",\n        course_az: "${courseAz}",\n        course_en: "${courseEn}",\n        date_az: "${dateAz}",\n        date_en: "${dateEn}",\n        file: "${filePath}"\n    },`;
+                // 2. Təmiz JSON bazasını (db.json) oxu
+                const dbPath = "database/db.json";
+                const dbData = await getGitHubFile(token, dbPath);
                 
-                scriptContent = scriptContent.replace("const certificatesDB = {", `const certificatesDB = {\n${newRecord}`);
+                // Məlumatı JSON olaraq çeviririk
+                let dbContent = JSON.parse(decodeURIComponent(escape(atob(dbData.content))));
 
-                const updatedBase64 = btoa(unescape(encodeURIComponent(scriptContent)));
-                
-                // 3. Yenilənmiş məlumatları yaz
-                await uploadToGitHub(token, scriptPath, updatedBase64, `Add ${id} to DB`, scriptData.sha);
+                // 3. Yeni tələbəni əlavə et
+                dbContent[id] = {
+                    name: name,
+                    course_az: courseAz,
+                    course_en: courseEn,
+                    date_az: dateAz,
+                    date_en: dateEn,
+                    file: filePath
+                };
 
-                showStatus(`Müvəffəqiyyətlə əlavə edildi! <br><br><a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}" target="_blank">Sertifikata Bax</a>`, "success");
+                // JSON-u yenidən Base64-ə çevir
+                const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(dbContent, null, 4))));
                 
-                // Formu təmizlə
+                // 4. Yenilənmiş db.json faylını geri yüklə
+                await uploadToGitHub(token, dbPath, updatedBase64, `Add ${id} to database`, dbData.sha);
+
+                showStatus(`Uğurla əlavə edildi! <br><br><a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}" target="_blank">Sertifikata Bax</a>`, "success");
+                
                 document.getElementById("admin-form").reset();
                 document.getElementById("gh-token").value = token;
             } catch (err) {
