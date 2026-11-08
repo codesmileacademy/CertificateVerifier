@@ -3,76 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | Sertifikat İdarəetməsi</title>
+    <title>Admin Panel | CodeSmile Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .admin-box { max-width: 650px; margin: 40px auto; padding: 2rem; }
-        .form-group { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
-        .form-group label { font-size: 0.85rem; font-weight: 600; color: #334155; }
-        .form-group input, .form-group select { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 0.95rem; }
-        .btn-submit { background-color: #2563eb; color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 1rem; margin-top: 1rem; width: 100%; transition: 0.2s; }
-        .btn-submit:hover { background-color: #1d4ed8; }
-        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 6px; font-size: 0.9rem; text-align: center; }
-        .status-msg.success { background: #d1fae5; color: #059669; }
-        .status-msg.error { background: #fef2f2; color: #dc2626; }
-        .status-msg.info { background: #e0f2fe; color: #0284c7; }
-        .token-note { font-size: 0.75rem; color: #64748b; margin-top: 0.2rem; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 20px; color: #0f172a; }
+        .admin-box { max-width: 650px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: #0455dc; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: 600; font-size: 0.85rem; color: #334155; }
+        input { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; }
+        .row { display: flex; gap: 15px; }
+        .row .form-group { flex: 1; }
+        .btn-submit { background: #0455dc; color: white; border: none; padding: 0.85rem; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 1rem; transition: 0.2s; }
+        .btn-submit:hover { background: #0342b0; }
+        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 6px; text-align: center; display: none; font-weight: 500;}
+        .success { background: #d1fae5; color: #059669; display: block; }
+        .error { background: #fef2f2; color: #dc2626; display: block; }
+        .info { background: #e0f2fe; color: #0284c7; display: block; }
     </style>
 </head>
 <body>
-    <div class="container admin-box">
-        <header class="header">
-            <img src="logo.png" alt="CodeSmile Academy" class="brand-logo">
-            <h1 class="page-title">Admin Panel — Yeni Sertifikat Əlavə Et</h1>
-            <p class="subtitle">Məlumatları doldurun və sertifikat faylını birbaşa bazaya yükləyin.</p>
-        </header>
+    <div class="admin-box">
+        <h1>Admin Panel — Yeni Sertifikat</h1>
+        <form id="admin-form">
+            <div class="form-group">
+                <label>GitHub Access Token:</label>
+                <input type="password" id="gh-token" required>
+            </div>
+            <div class="form-group">
+                <label>Sertifikat ID (Məs: CSA-2026-002):</label>
+                <input type="text" id="cert-id" required>
+            </div>
+            <div class="form-group">
+                <label>Tələbənin Adı və Soyadı:</label>
+                <input type="text" id="student-name" required>
+            </div>
 
-        <main class="main-content">
-            <form id="admin-form">
+            <!-- 2 DİLLİ XANALAR (KURS) -->
+            <div class="row">
                 <div class="form-group">
-                    <label>GitHub Access Token (Yalnız ilk dəfə daxil edin):</label>
-                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" required>
-                    <span class="token-note">Token brauzerinizdə təhlükəsiz yadda saxlanılacaq.</span>
+                    <label>Tədris Proqramı (AZ):</label>
+                    <input type="text" id="course-az" placeholder="Məs: Manual QA və SQL" required>
                 </div>
-
                 <div class="form-group">
-                    <label>Sertifikat ID (Məs: CSA-2026-003):</label>
-                    <input type="text" id="cert-id" placeholder="CSA-2026-003" required>
+                    <label>Training Program (EN):</label>
+                    <input type="text" id="course-en" placeholder="Məs: Manual QA and SQL" required>
                 </div>
+            </div>
 
+            <!-- 2 DİLLİ XANALAR (TARİX) -->
+            <div class="row">
                 <div class="form-group">
-                    <label>Tələbənin Adı və Soyadı:</label>
-                    <input type="text" id="student-name" placeholder="Məs: Rəsul Məmmədov" required>
+                    <label>Verilmə Tarixi (AZ):</label>
+                    <input type="text" id="date-az" placeholder="Məs: 15 Oktyabr 2026" required>
                 </div>
-
                 <div class="form-group">
-                    <label>Tədris Proqramı / Kurs:</label>
-                    <input type="text" id="course-name" placeholder="Məs: Manual QA və SQL" required>
+                    <label>Issue Date (EN):</label>
+                    <input type="text" id="date-en" placeholder="Məs: October 15, 2026" required>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label>Verilmə Tarixi:</label>
-                    <input type="text" id="issue-date" placeholder="Məs: 08 Noyabr 2026" required>
-                </div>
+            <div class="form-group">
+                <label>Sertifikat Faylı (PDF və ya PNG/JPG):</label>
+                <input type="file" id="cert-file" accept=".pdf,.png,.jpg,.jpeg" required>
+            </div>
 
-                <div class="form-group">
-                    <label>Sertifikat Faylı (PDF və ya Şəkil):</label>
-                    <input type="file" id="cert-file" accept=".pdf,.png,.jpg,.jpeg" required>
-                </div>
-
-                <button type="submit" class="btn-submit" id="btn-save">Sertifikatı Bazaya Əlavə Et</button>
-            </form>
-
-            <div id="status-box" class="status-msg hidden"></div>
-        </main>
+            <button type="submit" class="btn-submit" id="btn-save">Bazaya Əlavə Et</button>
+        </form>
+        <div id="status-box" class="status-msg"></div>
     </div>
 
     <script>
         const REPO_OWNER = "codesmileacademy";
         const REPO_NAME = "CertificateVerifier";
-
-        // Yadda saxlanılan tokeni yüklə
+        
         document.addEventListener("DOMContentLoaded", () => {
             const savedToken = localStorage.getItem("csa_gh_token");
             if (savedToken) document.getElementById("gh-token").value = savedToken;
@@ -81,55 +85,53 @@
         document.getElementById("admin-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btn-save");
-            const statusBox = document.getElementById("status-box");
-
+            
             const token = document.getElementById("gh-token").value.trim();
             const id = document.getElementById("cert-id").value.trim().toUpperCase();
             const name = document.getElementById("student-name").value.trim();
-            const course = document.getElementById("course-name").value.trim();
-            const date = document.getElementById("issue-date").value.trim();
+            
+            const courseAz = document.getElementById("course-az").value.trim();
+            const courseEn = document.getElementById("course-en").value.trim();
+            const dateAz = document.getElementById("date-az").value.trim();
+            const dateEn = document.getElementById("date-en").value.trim();
+            
             const fileInput = document.getElementById("cert-file");
 
             if (!fileInput.files.length) return;
             const file = fileInput.files[0];
-
-            // Tokeni yadda saxla
+            
             localStorage.setItem("csa_gh_token", token);
-
             btn.disabled = true;
-            showStatus("Sertifikat faylı GitHub-a yüklənir...", "info");
+            showStatus("Sertifikat GitHub-a yüklənir...", "info");
 
             try {
-                // 1. Faylı Base64 formatına çevir
-                const fileExt = file.name.split('.').pop();
+                const fileExt = file.name.split('.').pop().toLowerCase();
                 const filePath = `certificates/${id}.${fileExt}`;
                 const fileBase64 = await toBase64(file);
 
-                // 2. Faylı GitHub-a yüklə
-                await uploadToGitHub(token, filePath, fileBase64, `Upload certificate ${id}`);
-
+                // 1. Şəkli/PDF-i yüklə
+                await uploadToGitHub(token, filePath, fileBase64, `Upload cert ${id}`);
                 showStatus("Fayl yükləndi! Baza (script.js) yenilənir...", "info");
 
-                // 3. script.js faylını oxu və yeni sertifikatı əlavə et
+                // 2. script.js faylını oxu və 2 dilli bazaya əlavə et
                 const scriptPath = "script.js";
                 const scriptData = await getGitHubFile(token, scriptPath);
-                
                 let scriptContent = decodeURIComponent(escape(atob(scriptData.content)));
 
-                // Bazaya yeni tələbə yazısını əlavə et
-                const newRecord = `    "${id}": {\n        name: "${name}",\n        course: "${course}",\n        date: "${date}",\n        file: "${filePath}"\n    },`;
+                const newRecord = `    "${id}": {\n        name: "${name}",\n        course_az: "${courseAz}",\n        course_en: "${courseEn}",\n        date_az: "${dateAz}",\n        date_en: "${dateEn}",\n        file: "${filePath}"\n    },`;
                 
                 scriptContent = scriptContent.replace("const certificatesDB = {", `const certificatesDB = {\n${newRecord}`);
 
                 const updatedBase64 = btoa(unescape(encodeURIComponent(scriptContent)));
+                
+                // 3. Yenilənmiş məlumatları yaz
+                await uploadToGitHub(token, scriptPath, updatedBase64, `Add ${id} to DB`, scriptData.sha);
 
-                // 4. Yenilənmiş script.js faylını GitHub-a yaz
-                await uploadToGitHub(token, scriptPath, updatedBase64, `Add certificate ${id} to DB`, scriptData.sha);
-
-                showStatus(`Müvəffəqiyyətlə əlavə edildi!<br><br><b>Sertifikat Linki:</b><br><a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}" target="_blank">https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}</a>`, "success");
+                showStatus(`Müvəffəqiyyətlə əlavə edildi! <br><br><a href="https://${REPO_OWNER}.github.io/${REPO_NAME}/?id=${id}" target="_blank">Sertifikata Bax</a>`, "success");
+                
+                // Formu təmizlə
                 document.getElementById("admin-form").reset();
                 document.getElementById("gh-token").value = token;
-
             } catch (err) {
                 showStatus("Xəta baş verdi: " + err.message, "error");
             } finally {
@@ -150,23 +152,18 @@
             const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                 headers: { "Authorization": `token ${token}` }
             });
-            if (!res.ok) throw new Error("Fayl oxunmadı: " + res.statusText);
+            if (!res.ok) throw new Error("Fayl oxunmadı");
             return await res.json();
         }
 
         async function uploadToGitHub(token, path, contentBase64, message, sha = null) {
             const body = { message, content: contentBase64 };
             if (sha) body.sha = sha;
-
             const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                 method: "PUT",
-                headers: {
-                    "Authorization": `token ${token}`,
-                    "Content-Type": "application/json"
-                },
+                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
                 body: JSON.stringify(body)
             });
-
             if (!res.ok) {
                 const errData = await res.json();
                 throw new Error(errData.message || "Yükləmə xətası");
@@ -178,7 +175,6 @@
             const box = document.getElementById("status-box");
             box.className = `status-msg ${type}`;
             box.innerHTML = msg;
-            box.classList.remove("hidden");
         }
     </script>
 </body>
