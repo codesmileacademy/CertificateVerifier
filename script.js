@@ -1,5 +1,11 @@
 // Tələbə bazası - Hər yeni sertifikat verdikdə bura məlumatları əlavə edin
 const certificatesDB = {
+    "DAC-2026-011-157": {
+        name: "Anar Mustafayev",
+        course: "Data Analitika",
+        date: "09 Noyabr 2026",
+        file: "certificates/DAC-2026-011-157.png"
+    },
     "CSA-2026-001": {
         name: "Əli Əliyev",
         course: "Manual QA və SQL",
