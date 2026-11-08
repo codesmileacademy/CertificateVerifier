@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifikat Verifikasiya Portalı | CodeSmile Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <!-- Loqonu bura əlavə edəcəyik -->
+            <img src="logo.png" alt="CodeSmile Academy Logo" class="brand-logo" id="logo">
+            <h1 class="page-title">Sertifikat Verifikasiya Portalı</h1>
+            <p class="subtitle">Sertifikatın etibarlılığını yoxlamaq üçün unikal identifikasiya nömrəsini daxil edin.</p>
+        </header>
+
+        <main class="main-content">
+            <form id="verify-form" class="verify-form">
+                <div class="input-group">
+                    <input type="text" id="cert-id" placeholder="Məs: CSA-2026-001" required autocomplete="off">
+                    <button type="submit" class="btn-verify">Yoxla</button>
+                </div>
+                <div id="error-msg" class="error-msg hidden">Sertifikat nömrəsi daxil edilməlidir.</div>
+            </form>
+
+            <!-- Nəticə Ekranı -->
+            <div id="result-card" class="result-card hidden">
+                <div class="status-badge success">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Təsdiqlənmiş Sertifikat
+                </div>
+                
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Tələbə:</span>
+                        <span class="detail-value" id="res-name">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tədris Proqramı:</span>
+                        <span class="detail-value" id="res-course">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Verilmə Tarixi:</span>
+                        <span class="detail-value" id="res-date">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Sertifikat ID:</span>
+                        <span class="detail-value" id="res-id">-</span>
+                    </div>
+                </div>
+
+                <a href="#" id="res-link" class="btn-download" target="_blank">
+                    Sertifikata Bax (PDF)
+                </a>
+            </div>
+
+            <div id="not-found" class="not-found hidden">
+                Qeyd etdiyiniz nömrəyə uyğun sertifikat tapılmadı. Zəhmət olmasa ID-ni düzgün daxil etdiyinizdən əmin olun.
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 CodeSmile Academy. Bütün hüquqlar qorunur.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
